@@ -1,0 +1,13 @@
+services:
+  matchbox:
+    image: croeder/matchbox:latest
+    ports:
+      - "8080:8080"
+    volumes:
+      - matchbox-db:/database
+      - ./config:/config:ro
+      - ./igs:/igs:ro
+    restart: unless-stopped
+
+volumes:
+  matchbox-db:

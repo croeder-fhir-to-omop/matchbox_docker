@@ -1,0 +1,6 @@
+services:
+  matchbox:
+    build:
+      context: ../matchbox/matchbox-server
+      dockerfile: ../../matchbox_docker/Dockerfile
+    image: croeder/matchbox:latest

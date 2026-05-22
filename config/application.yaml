@@ -1,0 +1,26 @@
+spring:
+  datasource:
+    url: "jdbc:h2:file:/database/h2"
+    username: sa
+    password: null
+    driverClassName: org.h2.Driver
+  jpa:
+    properties:
+      hibernate.dialect: ca.uhn.fhir.jpa.model.dialect.HapiFhirH2Dialect
+
+hapi:
+  fhir:
+    implementationguides:
+      fhiromop:
+        name: hl7.fhir.uv.omop
+        version: 1.0.0
+        url:
+
+matchbox:
+  fhir:
+    context:
+      txServer: https://echidna.fhir.org/r4
+      translateMode: server
+      onlyOneEngine: true
+      igsPreloaded:
+        - hl7.fhir.uv.omop#1.0.0
