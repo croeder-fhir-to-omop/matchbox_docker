@@ -2,6 +2,16 @@
 
 Docker configuration for running [matchbox](https://github.com/croeder-fhir-to-omop/matchbox), a FHIR server with the [HL7 FHIR-to-OMOP Implementation Guide](https://hl7.org/fhir/uv/omop/) pre-loaded.
 
+Part of the [croeder-fhir-to-omop](https://github.com/croeder-fhir-to-omop) FHIR→OMOP pipeline:
+
+| Repo | Role |
+|---|---|
+| [matchbox](https://github.com/croeder-fhir-to-omop/matchbox) | FHIR server with OMOP IG (fork of ahdis/matchbox) |
+| **[matchbox_docker](https://github.com/croeder-fhir-to-omop/matchbox_docker)** | **Docker config and IGs for matchbox ← you are here** |
+| [matchbox_scripts](https://github.com/croeder-fhir-to-omop/matchbox_scripts) | Transform functions, ETL script, and FHIR fixtures |
+| [jupyter_docker](https://github.com/croeder-fhir-to-omop/jupyter_docker) | Interactive Jupyter notebook environment |
+| [dqd_docker](https://github.com/croeder-fhir-to-omop/dqd_docker) | Automated ETL + OHDSI Data Quality Dashboard |
+
 ## Contents
 
 | Path | Description |
