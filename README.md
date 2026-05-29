@@ -16,9 +16,9 @@ Part of the [croeder-fhir-to-omop](https://github.com/croeder-fhir-to-omop) FHIR
 
 | Path | Description |
 |---|---|
-| `Dockerfile` | Builds the matchbox image from `matchbox.jar` |
+| `Dockerfile` | Builds the matchbox image from `matchbox.jar`; downloads the OMOP IG at build time |
 | `config/application.yaml` | Spring/matchbox configuration — sets the OMOP IG, Echidna terminology server, and H2 database path |
-| `igs/hl7.fhir.uv.omop-1.0.0.tgz` | OMOP IG package, mounted into the container at startup |
+| `igs/hl7.fhir.uv.omop-1.0.0.tgz` | OMOP IG package (also baked into the image; mount to override) |
 | `docker-compose.yml` | Runs matchbox standalone on port 8080 |
 | `docker-compose.build.yml` | Builds the image from source (requires `matchbox` repo cloned alongside) |
 
@@ -36,8 +36,9 @@ Requires the `matchbox` repo cloned into the same parent directory.
 
 ```bash
 docker compose -f docker-compose.build.yml build
+docker compose -f docker-compose.build.yml push
 ```
 
 ## Role in the larger system
 
-`dqd_docker` and `jupyter_docker` both depend on this image (`croeder/matchbox:latest`) and mount `config/` and `igs/` from this repo. See the [organisation README](https://github.com/croeder-fhir-to-omop) for end-to-end usage.
+`dqd_docker` and `jupyter_docker` pull `croeder/matchbox:latest` directly — no clone of this repo is required to run them. The `config/` and `igs/` directories here are for local development overrides only.

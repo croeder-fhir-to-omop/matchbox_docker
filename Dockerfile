@@ -15,7 +15,10 @@ RUN adduser --disabled-password --gecos '' matchbox
 ENV HOME=/home/matchbox
 RUN mkdir -p /database && chown matchbox:matchbox /database
 RUN mkdir -p /config && chown matchbox:matchbox /config
-RUN mkdir -p /igs && chown matchbox:matchbox /igs
+RUN mkdir -p /igs \
+ && curl -fsSL https://packages.fhir.org/hl7.fhir.uv.omop/1.0.0 \
+    -o /igs/hl7.fhir.uv.omop-1.0.0.tgz \
+ && chown -R matchbox:matchbox /igs
 RUN chown matchbox:matchbox /
 
 # Bake in a base config that clears the hardcoded local IG path from the
