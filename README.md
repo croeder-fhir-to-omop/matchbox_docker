@@ -39,6 +39,44 @@ docker compose -f docker-compose.build.yml build
 docker compose -f docker-compose.build.yml push
 ```
 
+## Using a locally built version of the OMOP IG
+
+This section assumes you have cloned this repo (`matchbox_docker`) and are running `docker compose` from within it. The `./igs` and `./config` directories referenced below are inside that clone.
+
+If you are developing the IG in a sibling `fhir-omop-ig` repo and want matchbox to use your local build:
+
+1. Set the version in `fhir-omop-ig/sushi-config.yaml`:
+   ```yaml
+   version: 1.1.0
+   ```
+2. Build the IG (produces `fhir-omop-ig/output/hl7.fhir.uv.omop.en.tgz`)
+3. Copy it into this repo's `igs/` folder using the `{name}-{version}.tgz` naming convention:
+   ```bash
+   cp ../fhir-omop-ig/output/hl7.fhir.uv.omop.en.tgz ./igs/hl7.fhir.uv.omop-1.1.0.tgz
+   ```
+4. Update `config/application.yaml` to reference the new version in both places:
+   ```yaml
+   hapi:
+     fhir:
+       implementationguides:
+         fhiromop:
+           name: hl7.fhir.uv.omop
+           version: 1.1.0
+   matchbox:
+     fhir:
+       context:
+         igsPreloaded:
+           - hl7.fhir.uv.omop#1.1.0
+   ```
+5. Restart matchbox:
+   ```bash
+   docker compose down && docker compose up
+   ```
+
+No image rebuild is required. Both `./igs` and `./config` are mounted into the container at runtime, so changes to either take effect on the next `docker compose up`. You would only need to rebuild the image if changing the `Dockerfile` itself or updating `matchbox.jar`.
+
+The version in `config/application.yaml` must match the `"version"` field in `package/package.json` inside the tgz (which SUSHI sets from `sushi-config.yaml`).
+
 ## Role in the larger system
 
 `dqd_docker` and `jupyter_docker` pull `croeder/matchbox:latest` directly — no clone of this repo is required to run them. The `config/` and `igs/` directories here are for local development overrides only.
