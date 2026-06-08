@@ -13,14 +13,14 @@ hapi:
     implementationguides:
       fhiromop:
         name: hl7.fhir.uv.omop
-        version: 1.0.0
-        url:
+        version: 1.0.1
+        url: file:///igs/hl7.fhir.uv.omop-1.0.1.tgz
 
 matchbox:
   fhir:
     context:
       txServer: https://echidna.fhir.org/r4
-      translateMode: server
+      translateMode: fallback
       onlyOneEngine: true
       igsPreloaded:
-        - hl7.fhir.uv.omop#1.0.0
+        - hl7.fhir.uv.omop#1.0.1
