@@ -3,6 +3,8 @@ services:
     build:
       context: ../matchbox/matchbox-server
       dockerfile: ../../matchbox_docker/Dockerfile
+      additional_contexts:
+        ig_dir: ./igs
       platforms:
         - linux/amd64
         - linux/arm64

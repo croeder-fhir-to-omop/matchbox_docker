@@ -6,6 +6,10 @@ RUN apt-get update \
  && apt-get install -y curl \
  && rm -rf /var/lib/apt/lists/*
 
+# ig_dir build context provides the locally-built IG package
+# (not published to packages.fhir.org, so cannot be curled)
+COPY --from=ig_dir /hl7.fhir.uv.omop-1.0.1.tgz /tmp/hl7.fhir.uv.omop-1.0.1.tgz
+
 COPY ./target/matchbox.jar /matchbox.jar
 
 ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en' LC_ALL='en_US.UTF-8'
@@ -16,8 +20,7 @@ ENV HOME=/home/matchbox
 RUN mkdir -p /database && chown matchbox:matchbox /database
 RUN mkdir -p /config && chown matchbox:matchbox /config
 RUN mkdir -p /igs \
- && curl -fsSL https://packages.fhir.org/hl7.fhir.uv.omop/1.0.0 \
-    -o /igs/hl7.fhir.uv.omop-1.0.0.tgz \
+ && mv /tmp/hl7.fhir.uv.omop-1.0.1.tgz /igs/hl7.fhir.uv.omop-1.0.1.tgz \
  && chown -R matchbox:matchbox /igs
 RUN chown matchbox:matchbox /
 
@@ -40,8 +43,8 @@ hapi:
     implementationguides:
       fhiromop:
         name: hl7.fhir.uv.omop
-        version: 1.0.0
-        url:
+        version: 1.0.1
+        url: file:///igs/hl7.fhir.uv.omop-1.0.1.tgz
 
 matchbox:
   fhir:
@@ -50,7 +53,7 @@ matchbox:
       translateMode: fallback
       onlyOneEngine: true
       igsPreloaded:
-        - hl7.fhir.uv.omop#1.0.0
+        - hl7.fhir.uv.omop#1.0.1
 EOF
 
 USER matchbox
