@@ -47,7 +47,7 @@ matchbox:
   fhir:
     context:
       txServer: https://echidna.fhir.org/r4
-      translateMode: server
+      translateMode: fallback
       onlyOneEngine: true
       igsPreloaded:
         - hl7.fhir.uv.omop#1.0.0
