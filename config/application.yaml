@@ -21,6 +21,7 @@ matchbox:
     context:
       txServer: https://echidna.fhir.org/r4
       translateMode: fallback
+      omopIdSalt: ""
       onlyOneEngine: true
       igsPreloaded:
         - hl7.fhir.uv.omop#1.0.1
