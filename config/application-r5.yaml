@@ -1,0 +1,26 @@
+spring:
+  datasource:
+    url: "jdbc:h2:file:/database/h2"
+    username: sa
+    password: null
+    driverClassName: org.h2.Driver
+  jpa:
+    properties:
+      hibernate.dialect: ca.uhn.fhir.jpa.model.dialect.HapiFhirH2Dialect
+
+# R5 IG entry will be added here in Phase 3 when the R5 IG package is available.
+# hapi:
+#   fhir:
+#     implementationguides:
+#       fhiromop-r5:
+#         name: hl7.fhir.uv.omop
+#         version: 1.0.1-r5
+#         url: file:///igs/hl7.fhir.uv.omop-1.0.1-r5.tgz
+
+matchbox:
+  fhir:
+    context:
+      txServer: https://enchilada:8081/r5
+      translateMode: fallback
+      omopIdSalt: ""
+      onlyOneEngine: true
