@@ -6,6 +6,9 @@ RUN apt-get update \
  && apt-get install -y curl \
  && rm -rf /var/lib/apt/lists/*
 
+# ig_dir build context provides the locally-built IG package (same package as R4 — contains both R4 and R5 maps)
+COPY --from=ig_dir /hl7.fhir.uv.omop-1.0.1.tgz /tmp/hl7.fhir.uv.omop-1.0.1.tgz
+
 COPY ./target/matchbox.jar /matchbox.jar
 
 ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en' LC_ALL='en_US.UTF-8'
@@ -15,11 +18,12 @@ RUN adduser --disabled-password --gecos '' matchbox
 ENV HOME=/home/matchbox
 RUN mkdir -p /database && chown matchbox:matchbox /database
 RUN mkdir -p /config && chown matchbox:matchbox /config
-RUN mkdir -p /igs && chown -R matchbox:matchbox /igs
+RUN mkdir -p /igs \
+ && mv /tmp/hl7.fhir.uv.omop-1.0.1.tgz /igs/hl7.fhir.uv.omop-1.0.1.tgz \
+ && chown -R matchbox:matchbox /igs
 RUN chown matchbox:matchbox /
 
 # Bake in R5 defaults. Mount /config/application.yaml to override further.
-# R5 IG package and implementationguides entry will be added in Phase 3.
 RUN mkdir -p /defaults
 COPY --chown=matchbox:matchbox <<EOF /defaults/application.yaml
 spring:
@@ -32,12 +36,23 @@ spring:
     properties:
       hibernate.dialect: ca.uhn.fhir.jpa.model.dialect.HapiFhirH2Dialect
 
+hapi:
+  fhir:
+    fhir_version: R5
+    implementationguides:
+      fhiromop:
+        name: hl7.fhir.uv.omop
+        version: 1.0.1
+        url: file:///igs/hl7.fhir.uv.omop-1.0.1.tgz
+
 matchbox:
   fhir:
     context:
       txServer: https://enchilada:8081/r5
       translateMode: fallback
       onlyOneEngine: true
+      igsPreloaded:
+        - hl7.fhir.uv.omop#1.0.1
 EOF
 
 USER matchbox

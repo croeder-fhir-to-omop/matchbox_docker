@@ -8,14 +8,14 @@ spring:
     properties:
       hibernate.dialect: ca.uhn.fhir.jpa.model.dialect.HapiFhirH2Dialect
 
-# R5 IG entry will be added here in Phase 3 when the R5 IG package is available.
-# hapi:
-#   fhir:
-#     implementationguides:
-#       fhiromop-r5:
-#         name: hl7.fhir.uv.omop
-#         version: 1.0.1-r5
-#         url: file:///igs/hl7.fhir.uv.omop-1.0.1-r5.tgz
+hapi:
+  fhir:
+    fhir_version: R5
+    implementationguides:
+      fhiromop:
+        name: hl7.fhir.uv.omop
+        version: 1.0.1
+        url: file:///igs/hl7.fhir.uv.omop-1.0.1.tgz
 
 matchbox:
   fhir:
@@ -24,3 +24,5 @@ matchbox:
       translateMode: fallback
       omopIdSalt: ""
       onlyOneEngine: true
+      igsPreloaded:
+        - hl7.fhir.uv.omop#1.0.1
