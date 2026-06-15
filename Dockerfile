@@ -10,10 +10,6 @@ RUN apt-get update \
 # (not published to packages.fhir.org, so cannot be curled)
 COPY --from=ig_dir /hl7.fhir.uv.omop-1.0.1.tgz /tmp/hl7.fhir.uv.omop-1.0.1.tgz
 
-# Dependency packages bundled to avoid network fetches at runtime
-COPY --from=ig_dir /hl7.fhir.uv.extensions.r5-5.3.0.tgz /tmp/hl7.fhir.uv.extensions.r5-5.3.0.tgz
-COPY --from=ig_dir /hl7.terminology.r5-7.1.0.tgz /tmp/hl7.terminology.r5-7.1.0.tgz
-
 COPY ./target/matchbox.jar /matchbox.jar
 
 ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en' LC_ALL='en_US.UTF-8'
@@ -25,8 +21,6 @@ RUN mkdir -p /database && chown matchbox:matchbox /database
 RUN mkdir -p /config && chown matchbox:matchbox /config
 RUN mkdir -p /igs \
  && mv /tmp/hl7.fhir.uv.omop-1.0.1.tgz /igs/hl7.fhir.uv.omop-1.0.1.tgz \
- && mv /tmp/hl7.fhir.uv.extensions.r5-5.3.0.tgz /igs/hl7.fhir.uv.extensions.r5-5.3.0.tgz \
- && mv /tmp/hl7.terminology.r5-7.1.0.tgz /igs/hl7.terminology.r5-7.1.0.tgz \
  && chown -R matchbox:matchbox /igs
 RUN chown matchbox:matchbox /
 
@@ -47,14 +41,6 @@ spring:
 hapi:
   fhir:
     implementationguides:
-      extensions:
-        name: hl7.fhir.uv.extensions.r5
-        version: 5.3.0
-        url: file:///igs/hl7.fhir.uv.extensions.r5-5.3.0.tgz
-      terminology:
-        name: hl7.terminology.r5
-        version: 7.1.0
-        url: file:///igs/hl7.terminology.r5-7.1.0.tgz
       fhiromop:
         name: hl7.fhir.uv.omop
         version: 1.0.1
