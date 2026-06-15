@@ -19,7 +19,7 @@ hapi:
 matchbox:
   fhir:
     context:
-      txServer: https://echidna.fhir.org/r4
+      txServer: https://enchilada:8081/r4
       translateMode: fallback
       omopIdSalt: ""
       onlyOneEngine: true
