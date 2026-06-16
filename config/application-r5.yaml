@@ -20,7 +20,7 @@ hapi:
 matchbox:
   fhir:
     context:
-      txServer: https://enchilada:8081/r5
+      txServer: https://enchilada:8081/r4
       translateMode: fallback
       omopIdSalt: ""
       onlyOneEngine: true
