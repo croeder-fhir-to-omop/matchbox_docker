@@ -11,6 +11,7 @@ RUN apt-get update \
 COPY --from=ig_dir /hl7.fhir.uv.omop-1.0.1.tgz /tmp/hl7.fhir.uv.omop-1.0.1.tgz
 
 COPY ./target/matchbox.jar /matchbox.jar
+COPY --from=certs_dir /enchilada.jks /certs/enchilada.jks
 
 ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en' LC_ALL='en_US.UTF-8'
 RUN mkdir -p /data/hapi/lucenefiles && chmod 775 /data/hapi/lucenefiles
@@ -58,6 +59,7 @@ EOF
 
 USER matchbox
 
+ENV JAVA_TOOL_OPTIONS="-Djavax.net.ssl.trustStore=/certs/enchilada.jks -Djavax.net.ssl.trustStorePassword=changeit"
 ENV HEALTHCHECK_URL=http://localhost:8080/matchboxv3/actuator/health
 
 HEALTHCHECK --interval=10s --timeout=3s --start-period=60s --retries=6 \
