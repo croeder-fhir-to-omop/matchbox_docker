@@ -1,4 +1,7 @@
+ARG IG_VERSION=1.0.1
+
 FROM bellsoft/liberica-openjdk-debian:26
+ARG IG_VERSION=1.0.1
 EXPOSE 8080
 
 RUN apt-get update \
@@ -7,7 +10,7 @@ RUN apt-get update \
  && rm -rf /var/lib/apt/lists/*
 
 # ig_dir build context provides the locally-built IG package (same package as R4 — contains both R4 and R5 maps)
-COPY --from=ig_dir /hl7.fhir.uv.omop-1.0.1.tgz /tmp/hl7.fhir.uv.omop-1.0.1.tgz
+COPY --from=ig_dir /hl7.fhir.uv.omop-${IG_VERSION}.tgz /tmp/ig.tgz
 
 COPY ./target/matchbox.jar /matchbox.jar
 COPY --from=certs_dir /enchilada.jks /certs/enchilada.jks
@@ -20,13 +23,12 @@ ENV HOME=/home/matchbox
 RUN mkdir -p /database && chown matchbox:matchbox /database
 RUN mkdir -p /config && chown matchbox:matchbox /config
 RUN mkdir -p /igs \
- && mv /tmp/hl7.fhir.uv.omop-1.0.1.tgz /igs/hl7.fhir.uv.omop-1.0.1.tgz \
+ && mv /tmp/ig.tgz /igs/hl7.fhir.uv.omop-${IG_VERSION}.tgz \
  && chown -R matchbox:matchbox /igs
 RUN chown matchbox:matchbox /
 
 # Bake in R5 defaults. Mount /config/application.yaml to override further.
-RUN mkdir -p /defaults
-COPY --chown=matchbox:matchbox <<EOF /defaults/application.yaml
+RUN mkdir -p /defaults && cat > /defaults/application.yaml <<EOF
 spring:
   datasource:
     url: "jdbc:h2:file:/database/h2"
@@ -43,8 +45,8 @@ hapi:
     implementationguides:
       fhiromop:
         name: hl7.fhir.uv.omop
-        version: 1.0.1
-        url: file:///igs/hl7.fhir.uv.omop-1.0.1.tgz
+        version: ${IG_VERSION}
+        url: file:///igs/hl7.fhir.uv.omop-${IG_VERSION}.tgz
 
 matchbox:
   fhir:
@@ -53,7 +55,7 @@ matchbox:
       translateMode: fallback
       onlyOneEngine: true
       igsPreloaded:
-        - hl7.fhir.uv.omop#1.0.1
+        - hl7.fhir.uv.omop#${IG_VERSION}
 EOF
 
 USER matchbox
