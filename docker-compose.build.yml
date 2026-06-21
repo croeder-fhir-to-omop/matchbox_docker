@@ -5,6 +5,7 @@ services:
       dockerfile: ../../matchbox_docker/Dockerfile
       additional_contexts:
         ig_dir: ./igs
+        certs_dir: ./certs
       platforms:
         - linux/amd64
         - linux/arm64

@@ -7,8 +7,10 @@ RUN apt-get update \
  && rm -rf /var/lib/apt/lists/*
 
 COPY --from=ig_dir /hl7.fhir.uv.omop-1.0.0.tgz /tmp/ig.tgz
+COPY --from=certs_dir /enchilada.jks /certs/enchilada.jks
 
 COPY ./target/matchbox.jar /matchbox.jar
+
 ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en' LC_ALL='en_US.UTF-8'
 RUN mkdir -p /data/hapi/lucenefiles && chmod 775 /data/hapi/lucenefiles
 
@@ -19,6 +21,23 @@ RUN mkdir -p /config && chown matchbox:matchbox /config
 RUN mkdir -p /igs \
  && mv /tmp/ig.tgz /igs/hl7.fhir.uv.omop-1.0.0.tgz \
  && chown -R matchbox:matchbox /igs
+
+# Merge system CAs with enchilada's self-signed cert so both local enchilada
+# and public echidna.fhir.org work over HTTPS without overriding the CA bundle.
+RUN keytool -importkeystore \
+      -srckeystore "$JAVA_HOME/lib/security/cacerts" \
+      -srcstorepass changeit \
+      -destkeystore /certs/combined.jks \
+      -deststorepass changeit \
+      -noprompt 2>/dev/null; \
+    keytool -importkeystore \
+      -srckeystore /certs/enchilada.jks \
+      -srcstorepass changeit \
+      -destkeystore /certs/combined.jks \
+      -deststorepass changeit \
+      -noprompt 2>/dev/null || true; \
+    chown -R matchbox:matchbox /certs
+
 RUN chown matchbox:matchbox /
 
 RUN mkdir -p /defaults
@@ -54,6 +73,7 @@ EOF
 
 USER matchbox
 
+ENV JAVA_TOOL_OPTIONS="-Djavax.net.ssl.trustStore=/certs/combined.jks -Djavax.net.ssl.trustStorePassword=changeit"
 ENV HEALTHCHECK_URL=http://localhost:8080/matchboxv3/actuator/health
 
 HEALTHCHECK --interval=10s --timeout=3s --start-period=60s --retries=6 \
