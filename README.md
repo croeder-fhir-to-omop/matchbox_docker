@@ -16,11 +16,15 @@ Part of the [croeder-fhir-to-omop](https://github.com/croeder-fhir-to-omop) FHIR
 
 | Path | Description |
 |---|---|
-| `Dockerfile` | Builds the matchbox image from `matchbox.jar`; downloads the OMOP IG at build time |
-| `config/application.yaml` | Spring/matchbox configuration — sets the OMOP IG, Echidna terminology server, and H2 database path |
-| `igs/hl7.fhir.uv.omop-1.0.0.tgz` | OMOP IG package (also baked into the image; mount to override) |
+| `Dockerfile` | Default image (r5, IG 1.0.0) — bakes the OMOP IG and enchilada truststore into the image |
+| `Dockerfile.r4` | R4 variant image |
+| `Dockerfile.r5` | R5 variant image (used by `build_profiles.py` multi-stack builds) |
+| `config/application.yaml` | Spring/matchbox configuration — sets the OMOP IG, terminology server URL, and H2 database path |
+| `igs/` | OMOP IG package tarballs (also baked into the image; mount to override) |
 | `docker-compose.yml` | Runs matchbox standalone on port 8080 |
-| `docker-compose.build.yml` | Builds the image from source (requires `matchbox` repo cloned alongside) |
+| `docker-compose.build.yml` | Builds the default image from source (requires `matchbox` repo cloned alongside) |
+| `docker-compose.build.profiles.yml` | Multi-stack build compose for r4/r5 and multiple IG versions |
+| `deploy/matchbox_scripts/` | Helper shell scripts for interacting with a running matchbox server (see below) |
 
 ## Running standalone
 
@@ -76,6 +80,19 @@ If you are developing the IG in a sibling `fhir-omop-ig` repo and want matchbox 
 No image rebuild is required. Both `./igs` and `./config` are mounted into the container at runtime, so changes to either take effect on the next `docker compose up`. You would only need to rebuild the image if changing the `Dockerfile` itself or updating `matchbox.jar`.
 
 The version in `config/application.yaml` must match the `"version"` field in `package/package.json` inside the tgz (which SUSHI sets from `sushi-config.yaml`).
+
+## Helper scripts
+
+`deploy/matchbox_scripts/` contains shell scripts for interacting directly with a running matchbox server. All scripts default to `http://localhost:8080` and respect a `MATCHBOX_URL` environment variable.
+
+| Script | Usage | Description |
+|---|---|---|
+| `health.sh` | `./health.sh` | Check the matchbox actuator health endpoint |
+| `check_ig.sh` | `./check_ig.sh [filter]` | List loaded Implementation Guides; optionally filter by name |
+| `transform.sh` | `./transform.sh <payload.json>` | POST a FHIR resource to the `$transform` endpoint and pretty-print the result |
+| `validate.sh` | `./validate.sh <resource.json> [profile-url]` | Validate a FHIR resource, optionally against a specific profile |
+
+These are useful for debugging — verifying the IG loaded correctly, testing a StructureMap transform manually, or checking server health during development.
 
 ## Role in the larger system
 
