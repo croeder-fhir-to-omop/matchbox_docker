@@ -97,3 +97,9 @@ These are useful for debugging — verifying the IG loaded correctly, testing a 
 ## Role in the larger system
 
 `dqd_docker` and `jupyter_docker` pull `croeder/matchbox:latest` directly — no clone of this repo is required to run them. The `config/` and `igs/` directories here are for local development overrides only.
+
+## License
+
+Licensed under the [Apache License 2.0](./LICENSE). Copyright 2026 Christophe Roeder.
+
+See the [organization README](https://github.com/croeder-fhir-to-omop) for full pipeline documentation and vocabulary licensing notices ([NOTICES.md](https://github.com/croeder-fhir-to-omop/.github/blob/main/profile/NOTICES.md)).
