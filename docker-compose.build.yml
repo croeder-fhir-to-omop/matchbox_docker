@@ -9,4 +9,4 @@ services:
       platforms:
         - linux/amd64
         - linux/arm64
-    image: croeder/matchbox:latest
+    image: croeder/matchbox:${MATCHBOX_TAG:-latest}
