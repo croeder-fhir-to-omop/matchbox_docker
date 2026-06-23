@@ -6,6 +6,10 @@ services:
       additional_contexts:
         ig_dir: ./igs
         certs_dir: ./certs
+      args:
+        IG_SOURCE: "${IG_SOURCE:-}"
+        IG_COMMIT: "${IG_COMMIT:-}"
+        IG_BUILD_DATE: "${IG_BUILD_DATE:-}"
       platforms:
         - linux/amd64
         - linux/arm64

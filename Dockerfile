@@ -1,5 +1,16 @@
+ARG IG_SOURCE=""
+ARG IG_COMMIT=""
+ARG IG_BUILD_DATE=""
+
 FROM bellsoft/liberica-openjdk-debian:26
 EXPOSE 8080
+
+ARG IG_SOURCE
+ARG IG_COMMIT
+ARG IG_BUILD_DATE
+LABEL fhir-omop-ig.source="${IG_SOURCE}" \
+      fhir-omop-ig.commit="${IG_COMMIT}" \
+      fhir-omop-ig.build-date="${IG_BUILD_DATE}"
 
 RUN apt-get update \
  && apt-get upgrade -y \
