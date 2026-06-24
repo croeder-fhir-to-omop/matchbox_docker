@@ -6,11 +6,13 @@ Part of the [croeder-fhir-to-omop](https://github.com/croeder-fhir-to-omop) FHIR
 
 | Repo | Role |
 |---|---|
+| [fhir-omop-ig](https://github.com/croeder-fhir-to-omop/fhir-omop-ig) | HL7 FHIR-to-OMOP Implementation Guide — StructureMaps and ConceptMaps |
 | [matchbox](https://github.com/croeder-fhir-to-omop/matchbox) | FHIR server with OMOP IG (fork of ahdis/matchbox) |
 | **[matchbox_docker](https://github.com/croeder-fhir-to-omop/matchbox_docker)** | **Docker config and IGs for matchbox ← you are here** |
 | [matchbox_scripts](https://github.com/croeder-fhir-to-omop/matchbox_scripts) | Transform functions, ETL script, and FHIR fixtures |
 | [jupyter_docker](https://github.com/croeder-fhir-to-omop/jupyter_docker) | Interactive Jupyter notebook environment |
 | [dqd_docker](https://github.com/croeder-fhir-to-omop/dqd_docker) | Automated ETL + OHDSI Data Quality Dashboard |
+| [enchilada](https://github.com/croeder-fhir-to-omop/enchilada) | Local OMOP-backed FHIR terminology server |
 
 ## Contents
 
